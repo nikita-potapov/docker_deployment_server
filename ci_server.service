@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 RestartSec=3
 User=user
-ExecStart="/usr/bin/bash ci_server"
+ExecStart="/usr/bin/python3 /home/user/deployment/docker_deployment_server/main.py"
 Environment="CI_TOKEN= "
 
 [Install]
