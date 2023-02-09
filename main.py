@@ -113,7 +113,15 @@ def deploy_new_container(image_name: str, container_name: str, ports: dict = Non
         kill_old_container(container_name)
         log.debug('Old killed')
         # Запуск нового контейнера
-        docker_client.containers.run(image=image_name, name=container_name, detach=True, ports=ports)
+        docker_client.containers.run(
+            image=image_name,
+            name=container_name,
+            detach=True,
+            ports=ports,
+            restart_policy={
+                "name": "always"
+            }
+        )
     except Exception as e:
         log.error(f'Error while deploy container {container_name}, \n{e}')
         return {'status': False, 'error': str(e)}, 400
