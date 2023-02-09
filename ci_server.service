@@ -4,9 +4,11 @@ After=network-online.target
 
 [Service]
 Type=simple
+Restart=always
 RestartSec=3
-ExecStart=/usr/local/bin/ci_server
-Environment=CI_TOKEN=#<I generate it with $(openssl rand -hex 20)>
+User=user
+ExecStart="/usr/bin/bash ci_server"
+Environment="CI_TOKEN= "
 
 [Install]
 WantedBy=multi-user.target
