@@ -89,7 +89,7 @@ def kill_old_container(container_name: str) -> bool:
     :return:
     """
     try:
-        # Получение получение контейнера
+        # Получение контейнера
         container = docker_client.containers.get(container_name)
         # Остановка
         container.kill()
@@ -108,7 +108,7 @@ def deploy_new_container(image_name: str, container_name: str, ports: dict = Non
     try:
         # Пул последнего image из docker hub'a
         log.info(f'pull {image_name}, name={container_name}')
-        docker_client.images(image_name)
+        docker_client.images.pull(image_name)
         log.debug('Success')
         kill_old_container(container_name)
         log.debug('Old killed')
@@ -143,6 +143,7 @@ def MainHandler():
         log.debug(f'Recieved {request.data}')
         image_name, container_name = get_container_name(request.json)
         ports = request.json.get('ports') if request.json.get('ports') else None
+        log.info(f"Try to deploy new container {image_name}, {container_name}")
         result, status = deploy_new_container(image_name, container_name, ports)
         return jsonify(result), status
 
