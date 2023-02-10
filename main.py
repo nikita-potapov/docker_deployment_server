@@ -104,7 +104,8 @@ def kill_old_container(container_name: str) -> bool:
     return True
 
 
-def deploy_new_container(image_name: str, container_name: str, ports: dict = None):
+def deploy_new_container(image_name: str, container_name: str,
+                         ports: dict = None, environment: dict = None):
     try:
         # Пул последнего image из docker hub'a
         log.info(f'pull {image_name}, name={container_name}')
@@ -120,7 +121,8 @@ def deploy_new_container(image_name: str, container_name: str, ports: dict = Non
             ports=ports,
             restart_policy={
                 "name": "always"
-            }
+            },
+            environment=environment
         )
     except Exception as e:
         log.error(f'Error while deploy container {container_name}, \n{e}')
@@ -150,9 +152,10 @@ def MainHandler():
     elif request.method == 'POST':
         log.debug(f'Recieved {request.data}')
         image_name, container_name = get_container_name(request.json)
-        ports = request.json.get('ports') if request.json.get('ports') else None
+        ports = request.json.get('ports', None)
+        environment = request.json.get('environment', None)
         log.info(f"Try to deploy new container {image_name}, {container_name}")
-        result, status = deploy_new_container(image_name, container_name, ports)
+        result, status = deploy_new_container(image_name, container_name, ports, environment)
         return jsonify(result), status
 
 
